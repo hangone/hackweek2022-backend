@@ -15,8 +15,8 @@ type products struct {
 	Title   string
 	Content string
 	Picture string
-	//Creator   string    `gorm:"not null" json:"creator"`
-	Receiver  string
+	//Creator   string
+	//Receiver  string
 	IsSale    bool
 	IsArchive bool
 	CreatedAt time.Time

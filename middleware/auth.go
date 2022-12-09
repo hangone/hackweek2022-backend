@@ -12,20 +12,22 @@ func AuthUser(userTypes []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
 		parts := strings.SplitN(token, " ", 2)
-		if !(len(parts) == 2 && parts[0] == "Bearer") {
+		if len(parts) != 2 || parts[0] != "Bearer" {
 			c.JSON(498, gin.H{
 				"code":    498,
 				"message": "Authorization 格式错误",
 			})
 			c.Abort()
+			return
 		}
 		claims, err := model.ParseToken(parts[1])
 		if err != nil {
 			c.JSON(498, gin.H{
 				"code":    498,
-				"message": err,
+				"message": err.Error(),
 			})
 			c.Abort()
+			return
 		}
 		var user config.Users
 		result := config.Db.Where("username = ?", claims.Username).First(&user)
@@ -35,12 +37,14 @@ func AuthUser(userTypes []string) gin.HandlerFunc {
 				"message": "用户不存在",
 			})
 			c.Abort()
+			return
 		}
 		for _, userType := range userTypes {
 			if user.Type == userType {
 				c.Set("username", user.Username)
 				c.Next()
 				c.Abort()
+				return
 			}
 		}
 	}
