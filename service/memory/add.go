@@ -15,13 +15,15 @@ import (
 )
 
 func AddMemory(c *gin.Context) {
-	filename := ""
 	var allowType = map[string]string{"image/jpg": "", "image/jpeg": "", "image/png": "", "image/bmp": ""}
 	file, header, err := c.Request.FormFile("file")
 	title := c.PostForm("title")
 	content := c.PostForm("content")
 	username := c.GetString("username")
 	uuidV4 := uuid.New()
+	hashWithSalt := ""
+	hash := ""
+	filename := ""
 	if err == nil {
 		buf := make([]byte, 512)
 		_, err := file.Read(buf)
@@ -51,29 +53,12 @@ func AddMemory(c *gin.Context) {
 			return
 		}
 		sha256 := sha3.New256()
-		//sha256.Write(bit.Bytes())
-		//hash := fmt.Sprintf("%x", sha256.Sum(nil))
 		salt := []byte("nothing")
 		sha256.Write(buf)
+		hash = fmt.Sprintf("%x", sha256.Sum(nil))
 		sha256.Write(salt)
-		hashWithSalt := fmt.Sprintf("%x", sha256.Sum(nil))[7:23]
-		filename = hashWithSalt + path.Ext(header.Filename)
-		create := config.Db.Create(&config.Picture{
-			OriginName: header.Filename,
-			Name:       filename,
-			//Hash: hash,
-			HashWithSalt: hashWithSalt,
-		})
-		if create.Error != nil {
-			log.Println(create.Error)
-			c.JSON(201, gin.H{
-				"code":    201,
-				"message": "添加成功",
-				"name":    filename,
-				"uuid":    uuidV4,
-			})
-			return
-		}
+		hashWithSalt = fmt.Sprintf("%x", sha256.Sum(nil))
+		filename = hashWithSalt[7:23] + path.Ext(header.Filename)
 		if err := c.SaveUploadedFile(header, "./Data/images/"+filename); err != nil {
 			log.Println(err)
 			c.JSON(400, gin.H{
@@ -82,13 +67,17 @@ func AddMemory(c *gin.Context) {
 			})
 			return
 		}
+		hash = fmt.Sprintf("%x", sha3.Sum256(bit.Bytes()))
 	}
 	if result := config.Db.Create(&config.Memory{
-		Creator: username,
-		Uuid:    uuidV4,
-		Title:   title,
-		Content: content,
-		Picture: filename,
+		Creator:      username,
+		Uuid:         uuidV4,
+		Title:        title,
+		Content:      content,
+		OriginName:   header.Filename,
+		Name:         filename,
+		Hash:         hash,
+		HashWithSalt: hashWithSalt,
 	}); result.Error != nil {
 		log.Println(err)
 		c.JSON(400, gin.H{
@@ -98,17 +87,11 @@ func AddMemory(c *gin.Context) {
 		return
 	}
 	if filename != "" {
-		c.JSON(200, gin.H{
-			"code":     200,
-			"message":  "添加成功",
-			"filename": filename,
-			"uuid":     uuidV4,
-		})
-		return
 	}
 	c.JSON(200, gin.H{
-		"code":    200,
-		"message": "添加成功",
-		"uuid":    uuidV4,
+		"code":     200,
+		"message":  "添加成功",
+		"filename": filename,
+		"uuid":     uuidV4,
 	})
 }
