@@ -15,35 +15,35 @@ import (
 var Db = new(gorm.DB)
 
 type Users struct {
-	Username string `gorm:"not null;unique" json:"username" binding:"required"`
-	Password string `gorm:"not null" json:"password" binding:"required"`
-	Type     string `gorm:"not null;default:'user'" json:"type"` // 默认用户类型为 user
-	ShopName string `json:"shopName"`
-	BeLiked  int    `gorm:"not null;default:0" json:"BeLiked"`
+	Username string `gorm:"not null;unique" json:"username" binding:"required"` // 用户名
+	Password string `gorm:"not null" json:"password" binding:"required"`        // 密码
+	Type     string `gorm:"not null;default:'user'" json:"type"`                // 用户类型，默认为 user，管理员为 admin
+	ShopName string `json:"shopName"`                                           // 店铺名称
+	BeLiked  int    `gorm:"not null;default:0" json:"BeLiked"`                  // 被点赞数
 	gorm.Model
 }
 
 type Memory struct {
-	Uuid      uuid.UUID `gorm:"not null;type:uuid;primarykey" json:"uuid"`
-	Title     string    `json:"title"`
-	Content   string    `json:"content"`
-	Picture   string    `json:"picture"`
-	Creator   string    `gorm:"not null" json:"-"`
-	Receiver  string    `json:"-"`
-	IsSale    bool      `gorm:"not null;default:false" json:"-"`
-	IsArchive bool      `gorm:"not null;default:false"  json:"-"`
+	Uuid      uuid.UUID `gorm:"not null;type:uuid;primarykey" json:"uuid"` // uuid
+	Title     string    `json:"title"`                                     // 标题
+	Content   string    `json:"content"`                                   // 内容
+	Picture   string    `json:"picture"`                                   // 图片
+	Creator   string    `gorm:"not null" json:"-"`                         // 创建者
+	Receiver  string    `json:"-"`                                         // 接收者
+	IsSale    bool      `gorm:"not null;default:false" json:"-"`           // 是否出售
+	IsArchive bool      `gorm:"not null;default:false"  json:"-"`          // 是否归档
 	//gorm.Model
-	ID        uint      `gorm:"not null;sort:desc;autoIncrement" json:"-"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-	DeletedAt time.Time `gorm:"index" json:"-"`
+	ID        uint      `gorm:"not null;sort:desc;autoIncrement" json:"-"` // id
+	CreatedAt time.Time `json:"createdAt"`                                 // 创建时间
+	UpdatedAt time.Time `json:"updatedAt"`                                 // 更新时间
+	DeletedAt time.Time `gorm:"index" json:"-"`                            // 删除时间
 }
 
 type Picture struct {
-	OriginName   string `json:"-"`
-	Name         string `json:"name"`
-	Hash         string `json:"-"`
-	HashWithSalt string `json:"-"`
+	OriginName   string `json:"-"`               // 原始文件名
+	Name         string `json:"name"`            // 文件名
+	Hash         string `gorm:"unique" json:"-"` // 文件哈希
+	HashWithSalt string `json:"-"`               // 带盐的哈希
 }
 
 func InitDb() {

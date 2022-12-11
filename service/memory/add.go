@@ -9,10 +9,9 @@ import (
 	"nothing/config"
 	"path"
 
-	"golang.org/x/crypto/sha3"
-
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/sha3"
 )
 
 func AddMemory(c *gin.Context) {
@@ -60,8 +59,9 @@ func AddMemory(c *gin.Context) {
 		hashWithSalt := fmt.Sprintf("%x", sha256.Sum(nil))[7:23]
 		filename = hashWithSalt + path.Ext(header.Filename)
 		create := config.Db.Create(&config.Picture{
-			OriginName:   header.Filename,
-			Name:         filename,
+			OriginName: header.Filename,
+			Name:       filename,
+			//Hash: hash,
 			HashWithSalt: hashWithSalt,
 		})
 		if create.Error != nil {
