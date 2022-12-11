@@ -9,11 +9,11 @@ import (
 )
 
 func Login(c *gin.Context) {
-	var userBind, user config.Users
+	var userBind, user config.User
 	if err := c.ShouldBindJSON(&userBind); err != nil {
 		c.JSON(400, gin.H{
 			"code":    400,
-			"message": "输入错误",
+			"message": "json 解析失败",
 		})
 		return
 	}

@@ -29,7 +29,7 @@ func AuthUser(userTypes []string) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		var user config.Users
+		var user config.User
 		result := config.Db.Where("username = ?", claims.Username).First(&user)
 		if result.Error != nil {
 			c.JSON(401, gin.H{

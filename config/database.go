@@ -12,13 +12,20 @@ import (
 
 var Db = new(gorm.DB)
 
-type Users struct {
+type newGormModel struct {
+	//gorm.Model
+	ID        uint           `gorm:"not null;autoIncrement" json:"-"` // id
+	CreatedAt time.Time      `json:"createdAt"`                       // 创建时间
+	UpdatedAt time.Time      `json:"updatedAt"`                       // 更新时间
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`                  // 删除时间
+}
+type User struct {
 	Username string `gorm:"not null;unique" json:"username" binding:"required"` // 用户名
-	Password string `gorm:"not null" json:"password" binding:"required"`        // 密码
+	Password string `gorm:"not null" json:"-" binding:"required"`               // 密码
 	Type     string `gorm:"not null;default:'user'" json:"type"`                // 用户类型，默认为 user，管理员为 admin
 	ShopName string `json:"shopName"`                                           // 店铺名称
-	BeLiked  int    `gorm:"not null;default:0" json:"BeLiked"`                  // 被点赞数
-	gorm.Model
+	BeLiked  int    `gorm:"not null;default:0" json:"beLiked"`                  // 被点赞数
+	newGormModel
 }
 
 type Memory struct {
@@ -33,11 +40,7 @@ type Memory struct {
 	Receiver     string    `json:"-"`                                         // 接收者
 	IsSale       bool      `gorm:"not null;default:false" json:"-"`           // 是否出售
 	IsArchive    bool      `gorm:"not null;default:false"  json:"-"`          // 是否归档
-	//gorm.Model
-	ID        uint           `gorm:"not null;sort:desc;autoIncrement" json:"-"` // id
-	CreatedAt time.Time      `json:"createdAt"`                                 // 创建时间
-	UpdatedAt time.Time      `json:"updatedAt"`                                 // 更新时间
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`                            // 删除时间
+	newGormModel
 }
 
 func InitDb() {
@@ -57,7 +60,7 @@ func InitDb() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	err = Db.AutoMigrate(&Memory{}, &Users{})
+	err = Db.AutoMigrate(&Memory{}, &User{})
 	if err != nil {
 		log.Fatalln(err)
 	}

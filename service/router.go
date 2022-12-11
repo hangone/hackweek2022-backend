@@ -33,8 +33,10 @@ func Run() {
 	{
 		users.POST("/register", user.Register)
 		users.POST("/login", user.Login)
-		//users.PUT("/info",user.Info)
-		users.PUT("/password", middleware.AuthUser([]string{"user"}), user.ChangePassword)
+		users.Use(middleware.AuthUser([]string{"user"}))
+		users.GET("/info", user.GetUserInfo)
+		users.PUT("/info", user.UpdateUserInfo)
+		users.PUT("/password", user.ChangePassword)
 	}
 	memorys := router.Group("/memory")
 	memorys.Use(middleware.AuthUser([]string{"user"}))

@@ -8,16 +8,16 @@ import (
 )
 
 func Register(c *gin.Context) {
-	var userBind *config.Users
+	var userBind *config.User
 	if err := c.ShouldBindJSON(&userBind); err != nil {
 		c.JSON(400, gin.H{
 			"code":    400,
-			"message": "输入错误",
+			"message": "json 解析失败",
 		})
 		return
 	}
 	password := model.Encoding(userBind.Password)
-	create := config.Db.Create(&config.Users{
+	create := config.Db.Create(&config.User{
 		Username: userBind.Username,
 		Password: password,
 	})

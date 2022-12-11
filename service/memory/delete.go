@@ -18,7 +18,7 @@ func DeleteMemory(c *gin.Context) {
 		})
 		return
 	}
-	result := config.Db.Debug().Delete(&config.Memory{}, uuid2)
+	result := config.Db.Delete(&config.Memory{}, uuid2)
 	if result.Error != nil || result.RowsAffected != 1 {
 		log.Println(result.Error)
 		c.JSON(400, gin.H{

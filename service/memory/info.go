@@ -26,7 +26,7 @@ func GetMemoryInfo(c *gin.Context) {
 		return
 	}
 	username := c.GetString("username")
-	data := config.Db.Where("creator = ?", username).Order("created_at desc").Select("uuid,title,content,name,created_at,updated_at")
+	data := config.Db.Where("creator = ?", username).Order("id desc").Select("uuid,title,content,name,created_at,updated_at")
 	result := data.Limit(limit).Offset(offset).Find(&memory)
 	if result.Error != nil {
 		c.JSON(401, gin.H{

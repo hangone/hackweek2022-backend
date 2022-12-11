@@ -14,12 +14,12 @@ type Password struct {
 
 func ChangePassword(c *gin.Context) {
 	var passwordBind Password
-	var user config.Users
+	var user config.User
 	username, _ := c.Get("username")
 	if err := c.ShouldBindJSON(&passwordBind); err != nil {
 		c.JSON(400, gin.H{
 			"code":    400,
-			"message": "输入错误",
+			"message": "json 解析失败",
 		})
 		return
 	}
@@ -40,7 +40,7 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 	newPassword := model.Encoding(passwordBind.NewPassword)
-	result = config.Db.Where("username = ?", username).Updates(config.Users{Password: newPassword})
+	result = config.Db.Where("username = ?", username).Updates(config.User{Password: newPassword})
 	if result.Error != nil {
 		c.JSON(400, gin.H{
 			"code":    400,
