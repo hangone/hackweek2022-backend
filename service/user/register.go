@@ -1,6 +1,7 @@
 package user
 
 import (
+	"log"
 	"nothing/config"
 	"nothing/model"
 
@@ -8,8 +9,9 @@ import (
 )
 
 func Register(c *gin.Context) {
-	var userBind *config.User
+	var userBind config.User
 	if err := c.ShouldBindJSON(&userBind); err != nil {
+		log.Println(err)
 		c.JSON(400, gin.H{
 			"code":    400,
 			"message": "json 解析失败",

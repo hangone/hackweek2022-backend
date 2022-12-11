@@ -12,7 +12,7 @@ import (
 
 var Db = new(gorm.DB)
 
-type newGormModel struct {
+type GormModel struct {
 	//gorm.Model
 	ID        uint           `gorm:"not null;autoIncrement" json:"-"` // id
 	CreatedAt time.Time      `json:"createdAt"`                       // 创建时间
@@ -20,12 +20,12 @@ type newGormModel struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`                  // 删除时间
 }
 type User struct {
-	Username string `gorm:"not null;unique" json:"username" binding:"required"` // 用户名
-	Password string `gorm:"not null" json:"-" binding:"required"`               // 密码
-	Type     string `gorm:"not null;default:'user'" json:"type"`                // 用户类型，默认为 user，管理员为 admin
-	ShopName string `json:"shopName"`                                           // 店铺名称
-	BeLiked  int    `gorm:"not null;default:0" json:"beLiked"`                  // 被点赞数
-	newGormModel
+	Username string `gorm:"not null;unique" json:"username" binding:"required"`      // 用户名
+	Password string `gorm:"not null,-" json:"password,omitempty" binding:"required"` // 密码
+	Type     string `gorm:"not null;default:'user'" json:"type"`                     // 用户类型，默认为 user，管理员为 admin
+	ShopName string `json:"shopName"`                                                // 店铺名称
+	BeLiked  int    `gorm:"not null;default:0" json:"beLiked"`                       // 被点赞数
+	GormModel
 }
 
 type Memory struct {
@@ -39,8 +39,8 @@ type Memory struct {
 	Creator      string    `gorm:"not null" json:"-"`                         // 创建者
 	Receiver     string    `json:"-"`                                         // 接收者
 	IsSale       bool      `gorm:"not null;default:false" json:"-"`           // 是否出售
-	IsArchive    bool      `gorm:"not null;default:false"  json:"-"`          // 是否归档
-	newGormModel
+	IsArchive    bool      `gorm:"not null;default:false" json:"-"`           // 是否归档
+	GormModel
 }
 
 func InitDb() {

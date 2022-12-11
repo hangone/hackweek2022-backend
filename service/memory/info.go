@@ -26,8 +26,9 @@ func GetMemoryInfo(c *gin.Context) {
 		return
 	}
 	username := c.GetString("username")
-	data := config.Db.Where("creator = ?", username).Order("id desc").Select("uuid,title,content,name,created_at,updated_at")
-	result := data.Limit(limit).Offset(offset).Find(&memory)
+	data := config.Db.Debug().Where("creator = ?", username).Order("id desc").Select("uuid,title,content,name,created_at,updated_at").Find(&memory)
+	total := data.RowsAffected
+	result := data.Limit(limit).Offset(offset)
 	if result.Error != nil {
 		c.JSON(401, gin.H{
 			"code":    401,
@@ -39,6 +40,6 @@ func GetMemoryInfo(c *gin.Context) {
 		"code":    200,
 		"message": "获取成功",
 		"data":    memory,
-		"total":   result.RowsAffected,
+		"total":   total,
 	})
 }

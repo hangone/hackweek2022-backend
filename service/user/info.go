@@ -10,7 +10,7 @@ import (
 func GetUserInfo(c *gin.Context) {
 	var user config.User
 	username := c.GetString("username")
-	result := config.Db.Debug().Where("username = ?", username).Select("username,type,shop_name,be_liked,created_at,updated_at").First(&user)
+	result := config.Db.Where("username = ?", username).Select("username,type,shop_name,be_liked,created_at,updated_at").First(&user)
 	if result.Error != nil {
 		log.Println(result.Error)
 		c.JSON(401, gin.H{

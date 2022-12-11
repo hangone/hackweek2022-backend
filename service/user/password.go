@@ -1,6 +1,7 @@
 package user
 
 import (
+	"log"
 	"nothing/config"
 	"nothing/model"
 
@@ -14,8 +15,6 @@ type Password struct {
 
 func ChangePassword(c *gin.Context) {
 	var passwordBind Password
-	var user config.User
-	username, _ := c.Get("username")
 	if err := c.ShouldBindJSON(&passwordBind); err != nil {
 		c.JSON(400, gin.H{
 			"code":    400,
@@ -23,7 +22,8 @@ func ChangePassword(c *gin.Context) {
 		})
 		return
 	}
-	print(username)
+	var user config.User
+	username, _ := c.Get("username")
 	result := config.Db.Where("username = ?", username).First(&user)
 	if result.Error != nil {
 		c.JSON(500, gin.H{
@@ -42,6 +42,7 @@ func ChangePassword(c *gin.Context) {
 	newPassword := model.Encoding(passwordBind.NewPassword)
 	result = config.Db.Where("username = ?", username).Updates(config.User{Password: newPassword})
 	if result.Error != nil {
+		log.Println(result.Error)
 		c.JSON(400, gin.H{
 			"code":    400,
 			"message": "修改失败",
