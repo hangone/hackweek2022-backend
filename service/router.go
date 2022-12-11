@@ -41,7 +41,7 @@ func Run() {
 	{
 		memorys.GET("", memory.GetMemoryInfo)
 		memorys.POST("", memory.AddMemory)
-		memorys.DELETE("", memory.DeleteMemory)
+		memorys.DELETE("/:uuid", memory.DeleteMemory)
 	}
 	srv := &http.Server{
 		Addr:    ":8001",
