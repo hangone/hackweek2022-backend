@@ -16,7 +16,7 @@ type UserJwt struct {
 
 var (
 	jwtSecret           = []byte(config.Config.Jwt.SigningKey)
-	tokenExpireDuration = config.Config.Jwt.TokenExpireDuration
+	tokenExpireDuration = time.Hour * config.Config.Jwt.TokenExpireDuration
 )
 
 func GenerateToken(username string) (string, error) {
@@ -45,7 +45,7 @@ func ParseToken(tokenString string) (*UserJwt, error) {
 			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
 				return nil, errors.New("Token 还未激活")
 			} else {
-				return nil, errors.New("无法解析 Token")
+				return nil, errors.New("Token 无法解析")
 			}
 		}
 	}
@@ -54,5 +54,5 @@ func ParseToken(tokenString string) (*UserJwt, error) {
 			return claims, nil
 		}
 	}
-	return nil, errors.New("无法解析 Token")
+	return nil, errors.New("未知的 Token")
 }

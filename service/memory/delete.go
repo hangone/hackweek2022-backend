@@ -1,4 +1,4 @@
-package product
+package memory
 
 import (
 	"log"
@@ -7,13 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteProduct(c *gin.Context) {
-	var productBind, product config.Product
-	err := c.ShouldBindJSON(&productBind)
+func DeleteMemory(c *gin.Context) {
+	var memoryBind, memory config.Memory
+	err := c.ShouldBindJSON(&memoryBind)
 	if err != nil {
 		return
 	}
-	result := config.Db.Where("uid = ?", productBind.Uuid).Delete(&product)
+	result := config.Db.Where("uid = ?", memoryBind.Uuid).Delete(&memory)
 	if result.Error != nil {
 		log.Println(result.Error)
 		c.JSON(400, gin.H{

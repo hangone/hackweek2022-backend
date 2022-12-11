@@ -1,4 +1,4 @@
-package product
+package memory
 
 import (
 	"bytes"
@@ -15,7 +15,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func AddProduct(c *gin.Context) {
+func AddMemory(c *gin.Context) {
 	filename := ""
 	var allowType = map[string]string{"image/jpg": "", "image/jpeg": "", "image/png": "", "image/bmp": ""}
 	file, header, err := c.Request.FormFile("file")
@@ -83,7 +83,7 @@ func AddProduct(c *gin.Context) {
 			return
 		}
 	}
-	if result := config.Db.Create(&config.Product{
+	if result := config.Db.Create(&config.Memory{
 		Creator: username,
 		Uuid:    uuidV4,
 		Title:   title,

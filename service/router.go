@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 	"nothing/middleware"
-	"nothing/service/product"
+	"nothing/service/memory"
 	"nothing/service/user"
 	"os"
 	"os/signal"
@@ -17,14 +17,18 @@ import (
 )
 
 func Run() {
+	// gin with zap
 	router := gin.New()
 	logger, _ := zap.NewProduction()
 	router.Use(ginzap.Ginzap(logger, time.RFC3339, true))
 	router.Use(ginzap.RecoveryWithZap(logger, true))
+	// 跨域
 	router.Use(middleware.Cors())
+	// 图片静态目录
 	router.StaticFS("/images", http.Dir("./Data/images"))
 	// 为 multipart forms 设置较低的内存限制 (默认是 32 MiB)
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
+	// 用户
 	users := router.Group("/user")
 	{
 		users.POST("/register", user.Register)
@@ -32,12 +36,12 @@ func Run() {
 		//users.PUT("/info",user.Info)
 		users.PUT("/password", middleware.AuthUser([]string{"user"}), user.ChangePassword)
 	}
-	products := router.Group("/product")
-	products.Use(middleware.AuthUser([]string{"user"}))
+	memorys := router.Group("/memory")
+	memorys.Use(middleware.AuthUser([]string{"user"}))
 	{
-		products.GET("", product.GetProductInfo)
-		products.POST("", product.AddProduct)
-		products.DELETE("", product.DeleteProduct)
+		memorys.GET("", memory.GetMemoryInfo)
+		memorys.POST("", memory.AddMemory)
+		memorys.DELETE("", memory.DeleteMemory)
 	}
 	srv := &http.Server{
 		Addr:    ":8001",

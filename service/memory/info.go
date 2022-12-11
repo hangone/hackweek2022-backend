@@ -1,4 +1,4 @@
-package product
+package memory
 
 import (
 	"nothing/config"
@@ -7,9 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetProductInfo(c *gin.Context) {
-	var Product []config.Product
-	//var productList []Product
+func GetMemoryInfo(c *gin.Context) {
+	var memory []config.Memory
 	limit, err := strconv.Atoi(c.DefaultQuery("limit", "6"))
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -28,8 +27,7 @@ func GetProductInfo(c *gin.Context) {
 	}
 	username := c.GetString("username")
 	data := config.Db.Where("creator = ?", username).Order("created_at desc").Select("uuid,title,content,picture")
-	result := data.Limit(limit).Offset(offset).Find(&Product)
-	//result := config.Db.Order("id desc").Where("creator = ?", username).Limit(limit).Offset(offset).Select("uuid,title,content,picture").Find(&productList)
+	result := data.Limit(limit).Offset(offset).Find(&memory)
 	if result.Error != nil {
 		c.JSON(401, gin.H{
 			"code":    401,
@@ -40,7 +38,7 @@ func GetProductInfo(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"code":    200,
 		"message": "获取成功",
-		"data":    Product,
+		"data":    memory,
 		"total":   data.RowsAffected,
 	})
 }

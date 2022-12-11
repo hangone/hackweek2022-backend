@@ -23,7 +23,7 @@ type Users struct {
 	gorm.Model
 }
 
-type Product struct {
+type Memory struct {
 	Uuid      uuid.UUID `gorm:"not null;type:uuid;primarykey" json:"uuid"`
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
@@ -62,7 +62,7 @@ func InitDb() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	err = Db.AutoMigrate(&Product{}, &Users{}, &Picture{})
+	err = Db.AutoMigrate(&Memory{}, &Users{}, &Picture{})
 	if err != nil {
 		log.Fatalln(err)
 	}
