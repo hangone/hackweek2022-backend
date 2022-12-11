@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -23,7 +24,8 @@ type Database struct {
 	TimeZone string `yaml:"TimeZone"`
 }
 type Jwt struct {
-	SigningKey string `yaml:"signingKey"`
+	SigningKey          string        `yaml:"signingKey"`
+	TokenExpireDuration time.Duration `yaml:"tokenExpireDuration"`
 }
 
 func Init() {
@@ -33,11 +35,11 @@ func Init() {
 	//读取配置文件
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Println(err.Error())
+		log.Fatalln(err.Error())
 	}
 	//将配置文件读到结构体中
 	err = viper.Unmarshal(&Config)
 	if err != nil {
-		log.Println(err.Error())
+		log.Fatalln(err.Error())
 	}
 }

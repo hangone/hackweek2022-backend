@@ -3,10 +3,12 @@ package config
 import (
 	"fmt"
 	"log"
+	"time"
+
+	"gorm.io/driver/postgres"
 
 	"github.com/google/uuid"
 
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -15,20 +17,33 @@ var Db = new(gorm.DB)
 type Users struct {
 	Username string `gorm:"not null;unique" json:"username" binding:"required"`
 	Password string `gorm:"not null" json:"password" binding:"required"`
-	Type     string `gorm:"not null;default:'user'" json:"type"`
+	Type     string `gorm:"not null;default:'user'" json:"type"` // 默认用户类型为 user
+	ShopName string `json:"shopName"`
+	BeLiked  int    `gorm:"not null;default:0" json:"BeLiked"`
 	gorm.Model
 }
 
-type Products struct {
-	Uuid      uuid.UUID `gorm:"not null;unique;type:uuid" json:"uuid"`
+type Product struct {
+	Uuid      uuid.UUID `gorm:"not null;type:uuid;primarykey" json:"uuid"`
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
 	Picture   string    `json:"picture"`
-	Creator   string    `gorm:"not null" json:"creator"`
-	Receiver  string    `json:"receiver"`
-	IsSale    bool      `gorm:"not null;default:false" json:"isSale"`
-	IsArchive bool      `gorm:"not null;default:false" json:"isArchive"`
-	gorm.Model
+	Creator   string    `gorm:"not null" json:"-"`
+	Receiver  string    `json:"-"`
+	IsSale    bool      `gorm:"not null;default:false" json:"-"`
+	IsArchive bool      `gorm:"not null;default:false"  json:"-"`
+	//gorm.Model
+	ID        uint      `gorm:"not null;sort:desc;autoIncrement" json:"-"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	DeletedAt time.Time `gorm:"index" json:"-"`
+}
+
+type Picture struct {
+	OriginName   string `json:"-"`
+	Name         string `json:"name"`
+	Hash         string `json:"-"`
+	HashWithSalt string `json:"-"`
 }
 
 func InitDb() {
@@ -47,7 +62,7 @@ func InitDb() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	err = Db.AutoMigrate(&Products{}, &Users{})
+	err = Db.AutoMigrate(&Product{}, &Users{}, &Picture{})
 	if err != nil {
 		log.Fatalln(err)
 	}

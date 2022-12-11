@@ -20,7 +20,6 @@ func Register(c *gin.Context) {
 	create := config.Db.Create(&config.Users{
 		Username: userBind.Username,
 		Password: password,
-		Type:     "user",
 	})
 	if create.Error != nil {
 		c.JSON(400, gin.H{

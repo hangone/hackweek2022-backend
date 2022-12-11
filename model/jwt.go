@@ -1,6 +1,7 @@
 package model
 
 import (
+	"log"
 	"nothing/config"
 	"time"
 
@@ -13,10 +14,9 @@ type UserJwt struct {
 	jwt.RegisteredClaims
 }
 
-var jwtSecret = []byte(config.Config.Jwt.SigningKey)
-
-const (
-	tokenExpireDuration = time.Hour * 24 * 30
+var (
+	jwtSecret           = []byte(config.Config.Jwt.SigningKey)
+	tokenExpireDuration = config.Config.Jwt.TokenExpireDuration
 )
 
 func GenerateToken(username string) (string, error) {
@@ -36,6 +36,7 @@ func ParseToken(tokenString string) (*UserJwt, error) {
 		return jwtSecret, nil
 	})
 	if err != nil {
+		log.Println(err)
 		if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
 				return nil, errors.New("Token 格式错误")
