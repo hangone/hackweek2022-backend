@@ -16,7 +16,7 @@ type UserJwt struct {
 
 var (
 	jwtSecret           = []byte(config.Config.Jwt.SigningKey)
-	tokenExpireDuration = time.Hour * config.Config.Jwt.TokenExpireDuration
+	tokenExpireDuration = time.Hour * 24 * 30 // 一个月
 )
 
 func GenerateToken(username string) (string, error) {

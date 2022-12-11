@@ -24,8 +24,7 @@ type Database struct {
 	TimeZone string `yaml:"TimeZone"`
 }
 type Jwt struct {
-	SigningKey          string        `yaml:"signingKey"`
-	TokenExpireDuration time.Duration `yaml:"tokenExpireDuration"`
+	SigningKey string `yaml:"signingKey"` // 签名密钥
 }
 
 func Init() {
