@@ -46,5 +46,12 @@ func UpdateUserInfo(c *gin.Context) {
 		})
 		return
 	}
-
+	result.Updates(&config.User{
+		ShopName: userBind.ShopName,
+		Like:     userBind.Like,
+	})
+	c.JSON(200, gin.H{
+		"code":    200,
+		"message": "更新成功",
+	})
 }

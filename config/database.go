@@ -20,11 +20,12 @@ type GormModel struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`                  // 删除时间
 }
 type User struct {
-	Username string `gorm:"not null;unique" json:"username" binding:"required"`      // 用户名
-	Password string `gorm:"not null,-" json:"password,omitempty" binding:"required"` // 密码
-	Type     string `gorm:"not null;default:'user'" json:"type"`                     // 用户类型，默认为 user，管理员为 admin
-	ShopName string `json:"shopName"`                                                // 店铺名称
-	BeLiked  int    `gorm:"not null;default:0" json:"beLiked"`                       // 被点赞数
+	Username string `gorm:"not null;unique" json:"username"`      // 用户名
+	Password string `gorm:"not null,-" json:"password,omitempty"` // 密码
+	Type     string `gorm:"not null;default:'user'" json:"type"`  // 用户类型，默认为 user，管理员为 admin
+	ShopName string `json:"shopName"`                             // 店铺名称
+	Like     string `json:"like"`                                 //
+	Flower   int    `gorm:"not null;default:0" json:"flower"`     // 花
 	GormModel
 }
 
