@@ -23,7 +23,7 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 	var user config.User
-	username, _ := c.Get("username")
+	username := c.GetString("username")
 	result := config.Db.Where("username = ?", username).First(&user)
 	if result.Error != nil {
 		c.JSON(500, gin.H{

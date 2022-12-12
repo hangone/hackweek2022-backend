@@ -15,7 +15,7 @@ type UserJwt struct {
 }
 
 var (
-	jwtSecret           = []byte(config.Config.Jwt.SigningKey)
+	//jwtSecret           = viper.GetString("jwt.signingKey")
 	tokenExpireDuration = time.Hour * 24 * 30 // 一个月
 )
 
@@ -28,26 +28,16 @@ func GenerateToken(username string) (string, error) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecret)
+	return token.SignedString([]byte(config.Config.Jwt.SigningKey))
 }
 
 func ParseToken(tokenString string) (*UserJwt, error) {
 	tokenClaims, err := jwt.ParseWithClaims(tokenString, &UserJwt{}, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
+		return []byte(config.Config.Jwt.SigningKey), nil
 	})
 	if err != nil {
 		log.Println(err)
-		if ve, ok := err.(*jwt.ValidationError); ok {
-			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-				return nil, errors.New("Token 格式错误")
-			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
-				return nil, errors.New("Token 已过期")
-			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
-				return nil, errors.New("Token 还未激活")
-			} else {
-				return nil, errors.New("Token 无法解析")
-			}
-		}
+		return nil, err
 	}
 	if tokenClaims != nil {
 		if claims, ok := tokenClaims.Claims.(*UserJwt); ok && tokenClaims.Valid {

@@ -20,12 +20,14 @@ type GormModel struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`                  // 删除时间
 }
 type User struct {
-	Username string `gorm:"not null;unique" json:"username"`      // 用户名
-	Password string `gorm:"not null,-" json:"password,omitempty"` // 密码
-	Type     string `gorm:"not null;default:'user'" json:"type"`  // 用户类型，默认为 user，管理员为 admin
-	ShopName string `json:"shopName"`                             // 店铺名称
-	Like     string `json:"like"`                                 //
-	Flower   int    `gorm:"not null;default:0" json:"flower"`     // 花
+	Uuid        uuid.UUID `gorm:"not null;type:uuid;primaryKey" json:"uuid"`
+	Username    string    `gorm:"not null;unique" json:"username"`       // 用户名
+	Password    string    `gorm:"not null,-" json:"password,omitempty"`  // 密码
+	Type        string    `gorm:"not null;default:'user'" json:"type"`   // 用户类型，默认为 user，管理员为 admin
+	ShopName    string    `json:"shopName"`                              // 店铺名称
+	MemoryCount int       `gorm:"not null;default:0" json:"memoryCount"` // 记忆总数
+	Liked       string    `json:"liked"`                                 // 兴趣
+	Flower      int       `gorm:"not null;default:0" json:"flower"`      // 花
 	GormModel
 }
 
@@ -55,7 +57,6 @@ func InitDb() {
 		TimeZone = Config.Database.TimeZone
 		err      error
 	)
-
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s TimeZone=%s", host, port, user, password, dbname, sslmode, TimeZone)
 	Db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {

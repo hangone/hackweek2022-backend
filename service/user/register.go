@@ -6,6 +6,7 @@ import (
 	"nothing/model"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func Register(c *gin.Context) {
@@ -20,6 +21,7 @@ func Register(c *gin.Context) {
 	}
 	password := model.Encoding(userBind.Password)
 	create := config.Db.Create(&config.User{
+		Uuid:     uuid.New(),
 		Username: userBind.Username,
 		Password: password,
 	})

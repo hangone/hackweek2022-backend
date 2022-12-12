@@ -37,11 +37,13 @@ func Run() {
 		users.GET("/info", user.GetUserInfo)
 		users.PUT("/info", user.UpdateUserInfo)
 		users.PUT("/password", user.ChangePassword)
+		users.PUT("/flower/:uuid", user.Flower)
 	}
 	memorys := router.Group("/memory")
 	memorys.Use(middleware.AuthUser([]string{"user"}))
 	{
-		memorys.GET("", memory.GetMemoryInfo)
+		memorys.GET("", memory.GetMyMemoryInfo)
+		memorys.GET("/random", memory.GetRandomMemoryInfo)
 		memorys.POST("", memory.AddMemory)
 		memorys.DELETE("/:uuid", memory.DeleteMemory)
 	}

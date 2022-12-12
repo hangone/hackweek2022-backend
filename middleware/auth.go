@@ -41,6 +41,7 @@ func AuthUser(userTypes []string) gin.HandlerFunc {
 		}
 		for _, userType := range userTypes {
 			if user.Type == userType {
+				c.Set("uuid", user.Uuid)
 				c.Set("username", user.Username)
 				c.Next()
 				c.Abort()

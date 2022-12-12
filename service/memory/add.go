@@ -10,7 +10,7 @@ import (
 	"path"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
+	uuid2 "github.com/google/uuid"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -20,7 +20,7 @@ func AddMemory(c *gin.Context) {
 	title := c.PostForm("title")
 	content := c.PostForm("content")
 	username := c.GetString("username")
-	uuidV4 := uuid.New()
+	uuidV4 := uuid2.New()
 	hashWithSalt := ""
 	hash := ""
 	filename := ""
@@ -86,8 +86,10 @@ func AddMemory(c *gin.Context) {
 		})
 		return
 	}
-	if filename != "" {
-	}
+	var user config.User
+	config.Db.Where("username = ?", username).First(&user)
+	user.MemoryCount++
+	config.Db.Save(&user)
 	c.JSON(200, gin.H{
 		"code":     200,
 		"message":  "添加成功",

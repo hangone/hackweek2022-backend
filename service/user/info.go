@@ -10,7 +10,7 @@ import (
 func GetUserInfo(c *gin.Context) {
 	var user config.User
 	username := c.GetString("username")
-	result := config.Db.Where("username = ?", username).Select("username,type,shop_name,be_liked,created_at,updated_at").First(&user)
+	result := config.Db.Where("username = ?", username).Select("uuid,username,type,shop_name,liked,flower,created_at,updated_at").First(&user)
 	if result.Error != nil {
 		log.Println(result.Error)
 		c.JSON(401, gin.H{
@@ -48,7 +48,7 @@ func UpdateUserInfo(c *gin.Context) {
 	}
 	result.Updates(&config.User{
 		ShopName: userBind.ShopName,
-		Like:     userBind.Like,
+		Liked:    userBind.Liked,
 	})
 	c.JSON(200, gin.H{
 		"code":    200,
