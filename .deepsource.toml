@@ -5,3 +5,4 @@ name = "go"
 
   [analyzers.meta]
   import_root = "github.com/hangone/hackweek2022-backend"
+  dependencies_vendored = true
